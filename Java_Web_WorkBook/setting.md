@@ -47,6 +47,19 @@ www.apache.org에 들어가 tomcat을 선택후 (현재 기준 9.0을 선택했�
 core에서 64bit zip을 다운로드 받아주었다.  
 이후 압축을 풀고 startup 을 클릭했다. (여전히 글자는 깨진다.)  
 http://localhost:8080 을 주소창에 입력했을때 톰캣이 뜨는걸 확인 할수 있다.(만약 실행이 안된다면 이미 8080을 쓰고 있는 프로그램이 있다는 것이다. conf->server.xml->port에서 "8080"으로 설정된 포트 번호를 바꿔주면 된다.)  
+**이클립스에 tomcat설정**  
+이클립스에서 window->perference->server에서 add눌러서 tomcat 선택, browser에서 tomcat위치 선택.  
+java ee로 바꾸고 밑에 창에 server가 나타날거임. (없으면 window에서 추가하기.)  
+오른쪽키->new->server로 만들면 tomcat에서 conf애 있던 파일이 그대로 가져와진다.  
+server 실행하기 위해서는 서버 위에서 오른쪽 키 -> start  
+trouble shouting:  
+```
+Several ports (8005, 8080) required by Tomcat v9.0 Server at localhost are already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).
+```
+이런 에러가 뜬다면 이미 그 포트를 이용하고 있는 창이 있다는것. -> 닫아주면 됩니다  
+이대로 localhost를 한다면 아예 페이지가 안뜰텐데 project explorer에서 dynamic wed projrct를 만들어준다.   
+web project->webcontent에 html만든다.  
+서버에서 add and remove -> http://localhost:8080/TestWeb/index.html
 
 
   
