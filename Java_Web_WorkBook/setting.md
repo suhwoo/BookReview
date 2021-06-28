@@ -32,5 +32,21 @@ ps) 처음에 시작하면 this kind of project is assoicated with the Java pers
   -> yes를 눌러준다.  
     
 ->src -> new-> class -> default 에 체크.  
+## 3.Tomcat 설치 
+trouble shouting. 원래 톰캣이 깔려있었지만 localhost:8080을 할때 tomcat이 나타나지 않아 삭제하던중,
+```
+no service name specified to uninstall
+```
+이런 에러 팝업을 보았다.  
+해결방법은 cmd에서 Tomcat9폴더에 들어가 
+```
+Uninstall.exe -ServiceName="<Tomcat9>" 
+```
+이라고 치니 해결되었다.  
+www.apache.org에 들어가 tomcat을 선택후 (현재 기준 9.0을 선택했다.)  
+core에서 64bit zip을 다운로드 받아주었다.  
+이후 압축을 풀고 startup 을 클릭했다. (여전히 글자는 깨진다.)  
+http://localhost:8080 을 주소창에 입력했을때 톰캣이 뜨는걸 확인 할수 있다.(만약 실행이 안된다면 이미 8080을 쓰고 있는 프로그램이 있다는 것이다. conf->server.xml->port에서 "8080"으로 설정된 포트 번호를 바꿔주면 된다.)  
+
 
   
