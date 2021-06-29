@@ -60,7 +60,7 @@ Several ports (8005, 8080) required by Tomcat v9.0 Server at localhost are alrea
 이대로 localhost를 한다면 아예 페이지가 안뜰텐데 project explorer에서 dynamic wed projrct를 만들어준다.   
 web project->webcontent에 html만든다.  
 서버에서 add and remove -> http://localhost:8080/TestWeb/index.html  
-## 이클립스에 grrovy,gradle설치  
+## 4.이클립스에 groovy,gradle설치  
 이클립스에서 헬프->마켓 플레이스에서 groovy  
 영상에서는 groovy/grail 을 설치했지만 현재 해당 프로그램이 없어서 groovy4.1을 대신 설치했다.  
 마찬가지로 마켓플레이스에서 gradle 역시 해당 프로그램이 없어 gradle ide pack 3.8로 대신 설치했다.  
