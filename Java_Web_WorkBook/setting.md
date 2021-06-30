@@ -64,6 +64,26 @@ web project->webcontent에 html만든다.
 이클립스에서 헬프->마켓 플레이스에서 groovy  
 영상에서는 groovy/grail 을 설치했지만 현재 해당 프로그램이 없어서 groovy4.1을 대신 설치했다.  
 마찬가지로 마켓플레이스에서 gradle 역시 해당 프로그램이 없어 gradle ide pack 3.8로 대신 설치했다.  
+## 5.Mysql 설치  
+본인은 비밀번호를 잊어먹어서 삭제후 재설치 했다...  
+삭제 방법은   
+1. 제어판에서 mysql관련 모두 삭제  
+2. programfiles, programfiles x86, prgraom data폴더에서 mysql 모두 삭제  
+
+설치방법은  
+1. www.mysql.com 
+2. community에 들어가서 server 선택, 운영체제 선택 후 다운로드
+3. 강의에서는 custom을 통해 java위주로 선택했지만... 버전이 달라 custom 방법이 달라져서 그냥 default developer 선택함
+4. root 비밀번호 정하고, database 사용할 유저 정하고 계속 다음
+5. workbrench가 열리면 유저가 사용할 schema를 만들어준다
+6. 유저가 database에 접근할 수 있도록 user privillage 선택. 
+7. 유저 선택하고 schema privillage선택 
+8. add entry선택후 사용할 db선택.
+9. 그 db에 대해 어떤 권한을 가질 것인지. =>여기서는 select all 
+10. study라는 유저가 들어갈 수 있게 하나 connection만들고 로그인 
+11. table만들고 번개표시(run) 돌리면 table이 만들어진다.(session에 table안보이면 오른쪽 클릭후 refresh~)
+
+
 
 
 
