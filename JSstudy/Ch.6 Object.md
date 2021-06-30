@@ -16,8 +16,10 @@ Js에서 built-in 된 object의 properties는 readonly이며 직접 만든 prope
 ***
 본론 
 ***
-🦑 Create Object  
+### 🦑 Create Object  
+```
 let o = new Object() //이런식으로 쓰면 Object.create() 함수가 호출된다.  
+```
 literal하게는 
 ```
 let o = {“main title“:”JS”, “sub title“:{“isJava“: false, subname: ”ES”} }  
