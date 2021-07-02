@@ -81,7 +81,13 @@ web project->webcontent에 html만든다.
 8. add entry선택후 사용할 db선택.
 9. 그 db에 대해 어떤 권한을 가질 것인지. =>여기서는 select all 
 10. study라는 유저가 들어갈 수 있게 하나 connection만들고 로그인 
-11. table만들고 번개표시(run) 돌리면 table이 만들어진다.(session에 table안보이면 오른쪽 클릭후 refresh~)
+11. table만들고 번개표시(run) 돌리면 table이 만들어진다.(session에 table안보이면 오른쪽 클릭후 refresh~)  
+
+## 6.exerd설치  
+exerd.com에서 이클립스 플러그인 설치를 선택 후 주소 복사,  
+이클립스로 들어가서 help->new software install -> add ->이름(exerd.com), 주소는 아까꺼 붙여넣기 -> Contact~~~ 라고 써진거 체크 취소(다운로드 속도가 느려진다.)->이클립스 리스타트  
+
+
 
 
 
