@@ -33,7 +33,7 @@ ps) 처음에 시작하면 this kind of project is assoicated with the Java pers
     
 ->src -> new-> class -> default 에 체크.  
 ## 3.Tomcat 설치 
-trouble shouting. 원래 톰캣이 깔려있었지만 localhost:8080을 할때 tomcat이 나타나지 않아 삭제하던중,
+🥕trouble shouting. 원래 톰캣이 깔려있었지만 localhost:8080을 할때 tomcat이 나타나지 않아 삭제하던중,
 ```
 no service name specified to uninstall
 ```
@@ -52,7 +52,7 @@ http://localhost:8080 을 주소창에 입력했을때 톰캣이 뜨는걸 확�
 java ee로 바꾸고 밑에 창에 server가 나타날거임. (없으면 window에서 추가하기.)  
 오른쪽키->new->server로 만들면 tomcat에서 conf애 있던 파일이 그대로 가져와진다.  
 server 실행하기 위해서는 서버 위에서 오른쪽 키 -> start  
-trouble shouting:  
+🥕trouble shouting:  
 ```
 Several ports (8005, 8080) required by Tomcat v9.0 Server at localhost are already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).
 ```
@@ -91,14 +91,14 @@ https://github.com/eomjinyoung -> repo에서 javawebprogramming
 http 복사하고 이클립스에서 window->show view->other->git->git repo->아까복사했던 http가 있을것이다.  
 repo복사한다.  
 복사하면 git repo창에 다운된 파일이 나오는데 거기서 lession1을 오른쪽 클릭, import하면 된다.  
-touble shouting : 처음 Lession01web을 import받으면 
+🥕touble shouting : 처음 Lession01web을 import받으면 
 ```
 genericServlet cannot be resolved to type
 The import javax.servlet cannot be resolved 
 ```
 이런 에러가 떴다.  
 해결방법:이클립스에 등록되지 않은 톰캣을 쓴 것이 문제! -> 프로젝트의 properties에서 target runtime -> 톰캣 버전을 현재 사용중인 톰캣 버전으로 바꾸어 apply하면 에러가 사라진다.  
-touble shouting : Lession01web을 실행시키면 http://localhost:8080/Lesson01web/calc 가 뜨면서 
+🥕touble shouting : Lession01web을 실행시키면 http://localhost:8080/Lesson01web/calc 가 뜨면서 
 ```
 
 java.lang.NumberFormatException: null
