@@ -86,6 +86,32 @@ web project->webcontent에 html만든다.
 ## 6.exerd설치  
 exerd.com에서 이클립스 플러그인 설치를 선택 후 주소 복사,  
 이클립스로 들어가서 help->new software install -> add ->이름(exerd.com), 주소는 아까꺼 붙여넣기 -> Contact~~~ 라고 써진거 체크 취소(다운로드 속도가 느려진다.)->이클립스 리스타트  
+## 7.실습소스 가져오기  
+https://github.com/eomjinyoung -> repo에서 javawebprogramming  
+http 복사하고 이클립스에서 window->show view->other->git->git repo->아까복사했던 http가 있을것이다.  
+repo복사한다.  
+복사하면 git repo창에 다운된 파일이 나오는데 거기서 lession1을 오른쪽 클릭, import하면 된다.  
+touble shouting : 처음 Lession01web을 import받으면 
+```
+genericServlet cannot be resolved to type
+The import javax.servlet cannot be resolved 
+```
+이런 에러가 떴다.  
+해결방법:이클립스에 등록되지 않은 톰캣을 쓴 것이 문제! -> 프로젝트의 properties에서 target runtime -> 톰캣 버전을 현재 사용중인 톰캣 버전으로 바꾸어 apply하면 에러가 사라진다.  
+touble shouting : Lession01web을 실행시키면 http://localhost:8080/Lesson01web/calc 가 뜨면서 
+```
+
+java.lang.NumberFormatException: null
+	java.lang.Integer.parseInt(Integer.java:542)
+	java.lang.Integer.parseInt(Integer.java:615)
+	lesson01.servlets.CalculatorServlet.service(CalculatorServlet.java:21)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+
+```
+이런게 뜰텐데... http://localhost:8080/Lesson01web/calculator.html 로 이동하면 해결된다...  
+컴파일러, 혹은 톰캣 버전 문제인줄 알고 한참 헤맸다..  
+
+**여기까지가 기본 세팅 끝**
 
 
 
