@@ -133,7 +133,7 @@ class들은 WEB-INF밑에 배치된다.
 lib~index.html까지는 ROOT밑의 web03안에 그대로 있다.  
 실제로 톰캣에 웹 프로젝트를 배치하면 tmp0라는 임시폴더에 프로젝트 이름으로 배치된다.
 3. 톰캣 운영서버에 배치하기.  
-이클립스 File옵션에서 export선택.->Web->War파일로.->이 War파일을 톰캣에 배치.->bin에서 startup  
+이클립스 File옵션에서 export선택.-> Web-> War파일로 -> 이 War파일을 톰캣에 배치 -> bin에서 startup  
 ## 3.4 GenericServlet의 사용  
 인터페이스란 무엇일까?  
 호출자와 비호출자 사이의 호출규칙을 말한다.  
