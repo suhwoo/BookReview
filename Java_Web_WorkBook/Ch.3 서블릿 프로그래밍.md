@@ -126,5 +126,89 @@ http://localhost:8080/web03
 다음과 같이 프로젝트 이름까지만 쳤을때 나오는 화면이다.  
 index.html이 없으면 다음파일(index.htm) 없으면 그다음 ...  
 이런 방식으로 위에서부터 해당 파일이 있는지 찾는다.  
+## 3.3 웹 애플리케이션 배치(이건 왜 필요한거지?)  
+1. 이클립스를 통한 자동 배치 -> 서버에 add and remove  
+2. 톰캣서버는 배치된 폴더로 간다. workspace~이런 폴더. 프로젝트의 property밑에 resource를 보면 어디에 있는지 알 수 있다. workspace->.metadata  
+class들은 WEB-INF밑에 배치된다.  
+lib~index.html까지는 ROOT밑의 web03안에 그대로 있다.  
+실제로 톰캣에 웹 프로젝트를 배치하면 tmp0라는 임시폴더에 프로젝트 이름으로 배치된다.
+3. 톰캣 운영서버에 배치하기.  
+이클립스 File옵션에서 export선택.->Web->War파일로.->이 War파일을 톰캣에 배치.->bin에서 startup  
+## 3.4 GenericServlet의 사용  
+인터페이스란 무엇일까?  
+호출자와 비호출자 사이의 호출규칙을 말한다.  
+예를 들어 servlet interface. 호출자는 톰캣서버, 피호출자는 자바프로그램이다. 이 사이의 호출규칙을 정의한것이 servlet interface이다.  
+이중 가장 중요한게 service메소드이다. 자바프로그램이 해야할 일이 여기에 들어간다.  
+이 자바프로그램을 서블릿클래스라고 한다.  
+사실상 service이외는 필요할때만 구현하는데 그럼에도 불구하고 5개를 모두 구현하는건 복잡하다. -> GenericServlet추상클래스를 쓴다!  
+추상클래스란 subclass의 공통적인 메소드를 가지고 있는 클래스이다.  
+이제 GenericServlet만 상속받아서 service만 구현하면 된다  
+```java
+package lesson03.servlets;
+
+import java.io.IOException;
+
+import javax.servlet.GenericServlet;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+
+
+public class HelloWorld2 extends GenericServlet{
+	private static final long serialVersionUID = 1L;
+	@Override
+	public void service(ServletRequest arg0, ServletResponse arg1) 
+		throws ServletException, IOException {
+			// TODO Auto-generated method stub
+			System.out.println("service");
+		}
+}
+
+```
+xml에도 추가시킨다.  
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>web03</display-name>
+  <!-- 서블릿정의 -->
+  <servlet>
+  	<servlet-name>Hello</servlet-name>
+  	<servlet-class>lesson03.servlets.HelloWorld</servlet-class>
+  </servlet>
+    <servlet>
+  	<servlet-name>Hello2</servlet-name>
+  	<servlet-class>lesson03.servlets.HelloWorld2</servlet-class>
+  </servlet>
+  <!-- 서블릿과 url연결 서블릿을 언제 실행할건지! -->
+  <servlet-mapping>
+  	<servlet-name>Hello</servlet-name>
+  	<url-pattern>/okok/Hello</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+  	<servlet-name>Hello2</servlet-name>
+  	<url-pattern>/hihi/Hello2</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
+```
+그럼 http://localhost:8080/web03/hihi/Hello2 를 치면 다음과 같이 나온다  
+![image](https://user-images.githubusercontent.com/61738600/125945730-c0ad4b0a-2dde-46b7-b0f4-5dde2adfcd06.png)  
+계산기 servlet에는
+```java
+@WebServlet("/calc")
+@SuppressWarnings("serial")
+```
+다음과같이 되어있는데 이는 @SuppressWarnings("serial")는 private static final long serialVersionUID = 1L;를 대신하여 경고를 띄우지 않도록 하고, @WebServlet("/calc")는 xml에 번거롭게 경로를 지정해줄 필요를 없앤다.  
+
+
+
 
 
