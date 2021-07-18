@@ -86,9 +86,9 @@ public class MemberListServlet extends GenericServlet{
 
 ```
 다음과 같이 짜준다. 실행시키면 데이터베이스에서 가져온 정보가 출력되는 것을 알 수 있다.  
-🥕trouble shouting: 코드를 짜고 처음 실행했을때
+🥕trouble shouting: 코드를 짜고 처음 실행했을때  
 ![image](https://user-images.githubusercontent.com/61738600/126076079-9d3c9701-7359-400e-9890-93441fe4a2e9.png)  
-다음과 같은 에러가 떠서 당황했다. 문제점은 @WebServlet("/member/list")인데 @WebServlet("member/list")라고 썼다. 저런 에러가 나온다면 이 부분 확인해보기!
+다음과 같은 에러가 떠서 당황했다. 문제점은 @WebServlet("/member/list")인데 @WebServlet("member/list")라고 썼다. 저런 에러가 나온다면 이 부분 확인해보기!  
 🥕trouble ~shouting~: 강의에서는 브라우저에 이쁘게 출력되는 반면 직접 쳐보니 list라는 파일이 다운받아졌다. 열어보면 데이터는 맞는데.. explorer에서 띄우면 글자가 깨진다. charset utf-8로 했는데 왜 깨지는지 의문... 이 부분은 아직 해결하지 못했다.  
 
 
