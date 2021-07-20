@@ -90,5 +90,204 @@ public class MemberListServlet extends GenericServlet{
 ![image](https://user-images.githubusercontent.com/61738600/126076079-9d3c9701-7359-400e-9890-93441fe4a2e9.png)  
 다음과 같은 에러가 떠서 당황했다. 문제점은 @WebServlet("/member/list")인데 @WebServlet("member/list")라고 썼다. 저런 에러가 나온다면 이 부분 확인해보기!  
 🥕trouble ~shouting~: 강의에서는 브라우저에 이쁘게 출력되는 반면 직접 쳐보니 list라는 파일이 다운받아졌다. 열어보면 데이터는 맞는데.. explorer에서 띄우면 글자가 깨진다. charset utf-8로 했는데 왜 깨지는지 의문... 이 부분은 아직 해결하지 못했다.  
+## 4.3 HttpServlet으로 GET요청다루기  
+HttpServlet은 GenericServlet을 상속받고 class는 HttpServlet을 상속받는다.  
+클라이언트가 요청한 방법에 따라 doGet(),doPost()등으로 override한다.  
+링크를 클릭하면, get요청이 일어난다.  
+```java
+package spms.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@SuppressWarnings("serial")
+@WebServlet("/member/add")
+public class MemberAddServlet extends HttpServlet {
+	@Override
+	protected void doGet(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.println("<html><head><title>회원 등록</title></head>");
+		out.println("<body><h1>회원 등록</h1>");
+		out.println("<form action='add' method='post'>");
+		out.println("이름: <input type='text' name='name'><br>");
+		out.println("이메일: <input type='text' name='email'><br>");
+		out.println("암호: <input type='password' name='password'><br>");
+		out.println("<input type='submit' value='추가'>");
+		out.println("<input type='reset' value='취소'>");
+		out.println("</form>");
+		out.println("</body></html>");
+	}
+}
+
+```
+![image](https://user-images.githubusercontent.com/61738600/126267076-44279d4f-3a62-4f48-8815-c0d3f5ae7f2a.png)  
+다음 페이지가 나오는데 추가를 눌렀을때는 post함수가 호출되므로 405에러가 뜬다.  
+```java
+package spms.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@SuppressWarnings("serial")
+@WebServlet("/member/add")
+public class MemberAddServlet extends HttpServlet {
+	@Override
+	protected void doGet(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.println("<html><head><title>회원 등록</title></head>");
+		out.println("<body><h1>회원 등록</h1>");
+		out.println("<form action='add' method='post'>");
+		out.println("이름: <input type='text' name='name'><br>");
+		out.println("이메일: <input type='text' name='email'><br>");
+		out.println("암호: <input type='password' name='password'><br>");
+		out.println("<input type='submit' value='추가'>");
+		out.println("<input type='reset' value='취소'>");
+		out.println("</form>");
+		out.println("</body></html>");
+	}
+	
+	@Override
+	protected void doPost(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost/studydb", //JDBC URL
+					"study",	// DBMS 사용자 아이디
+					"study");	// DBMS 사용자 암호
+			stmt = conn.prepareStatement(
+					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)"
+					+ " VALUES (?,?,?,NOW(),NOW())");
+			stmt.setString(1, request.getParameter("email"));
+			stmt.setString(2, request.getParameter("password"));
+			stmt.setString(3, request.getParameter("name"));
+			stmt.executeUpdate();
+			
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println("<html><head><title>회원등록결과</title></head>");
+			out.println("<body>");
+			out.println("<p>등록 성공입니다!</p>");
+			out.println("</body></html>");
+			
+		} catch (Exception e) {
+			throw new ServletException(e);
+			
+		} finally {
+			try {if (stmt != null) stmt.close();} catch(Exception e) {}
+			try {if (conn != null) conn.close();} catch(Exception e) {}
+		}
+
+	}
+}
+
+```
+doPost()를 추가하면 아래와 같이 post요청에 대해 결과가 나온다.  
+![image](https://user-images.githubusercontent.com/61738600/126267331-914a513f-2c19-4db6-bfe3-3b989153dcc6.png)   
+위의 코드를 보면 Statement가 아니라 PreparedStatment를 사용했는데. 이 preparedstatement를 사용해서 ?로 데이터가 들어가야할 자리를 만들고 나중에 stmt.setString(1, request.getParameter("email")); 와 같이 파라미터를 줌으로써 실행할 수 있다.  
+한글로 넣으면 list안에 글자가 깨져서 들어가는데 애초에 깨진걸 보내줘서 그런거기 때문에
+```java
+package spms.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@SuppressWarnings("serial")
+@WebServlet("/member/add")
+public class MemberAddServlet extends HttpServlet {
+	@Override
+	protected void doGet(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.println("<html><head><title>회원 등록</title></head>");
+		out.println("<body><h1>회원 등록</h1>");
+		out.println("<form action='add' method='post'>");
+		out.println("이름: <input type='text' name='name'><br>");
+		out.println("이메일: <input type='text' name='email'><br>");
+		out.println("암호: <input type='password' name='password'><br>");
+		out.println("<input type='submit' value='추가'>");
+		out.println("<input type='reset' value='취소'>");
+		out.println("</form>");
+		out.println("</body></html>");
+	}
+	
+	@Override
+	protected void doPost(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost/studydb", //JDBC URL
+					"study",	// DBMS 사용자 아이디
+					"study");	// DBMS 사용자 암호
+			stmt = conn.prepareStatement(
+					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)"
+					+ " VALUES (?,?,?,NOW(),NOW())");
+			stmt.setString(1, request.getParameter("email"));
+			stmt.setString(2, request.getParameter("password"));
+			stmt.setString(3, request.getParameter("name"));
+			stmt.executeUpdate();
+			
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println("<html><head><title>회원등록결과</title></head>");
+			out.println("<body>");
+			out.println("<p>등록 성공입니다!</p>");
+			out.println("</body></html>");
+			
+		} catch (Exception e) {
+			throw new ServletException(e);
+			
+		} finally {
+			try {if (stmt != null) stmt.close();} catch(Exception e) {}
+			try {if (conn != null) conn.close();} catch(Exception e) {}
+		}
+
+	}
+}
+
+```
+다음과 같이 request.setCharacterEncoding("UTF-8");를 넣어줘서 들어오는 데이터가 UTF-8이라는 것을 명시해주면 된다.  
 
 
