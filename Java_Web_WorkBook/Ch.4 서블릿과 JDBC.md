@@ -290,4 +290,87 @@ public class MemberAddServlet extends HttpServlet {
 ```
 다음과 같이 request.setCharacterEncoding("UTF-8");를 넣어줘서 들어오는 데이터가 UTF-8이라는 것을 명시해주면 된다.  
 
+## 4.5, 4.6 리프래시  
+하나의 환경에서 다른화면으로 자동으로 이동.  
+원래는 추가를 누르면 post요청으로 서블릿 호출해서 doPost실행하고 결과가 응답되어 페이지가 나타났다. 그 이후 회원목록을 출력하려면 다시 url요청을 줘야하는데 그거 대신 리프래시를 주면된다.  
+Refresh: 1;url=list 이런식으로 헤더추가.  
+헤더이름 경과시간 요청할 url참고로 list는 상대경로   
+어떻게 추가할까? -> response.addHeader로 or setHeader  
+![image](https://user-images.githubusercontent.com/61738600/127025402-4b1b7cb9-63cc-4741-8527-001a46ddba32.png)  
+추가시키면 다음과 같이 1초후에 list가 다운되는 것을 볼 수 있다.  
+등록결과가 MemberListServlet에 1초후에 목록을 요청하고 MemberListServlet이 회원목록을 클라이언트에 넘긴다.  
+  
+그외에 HTML에 Refreah 정보를 메타태그로 삽입할수도 있다.  
+![image](https://user-images.githubusercontent.com/61738600/127025913-588ed5ad-00e3-4bb7-b2a1-8b5a79d9bfab.png)
+  
+리프래시처럼 하나의 화면에서 다른화면으로 이동시키는 게 있다 -> 리다이렉트  
+리프래시와 다르게 MemberAddServlet이 등록완료화면을 띄우지 않고 리다이렉트 응답을 준다. -> 브라우저에서 등록결과를 출력하지않는다->리다이렉트 응답을 받으면 즉시 MemberListServlet으로 목록을 요청하고 회원목록을 출력한다.  
+마찬가지로 response.sendRedirect("list")로 요청할 수 있다.  
+리프래시와 다르게 등록성공이라는 페이지는 띄우지 않는다.  
+sendRedirect이후의 코드는 브라우저로 전달되지도 않음!  
+
+## 4.7 서블릿 초기화 매개변수  
+지금 list는 DBMS에서 가져오는데 만약 DBMS정보가 바뀐다면? -> 서블릿 소스를 변경해야 한다. -> 서버에 재배포해야한다. ->유지보수가 어려움.  
+변경될 수 있는 값을 외부의 파일로 보관한다면 -> DD파일 web.xml에 뽑아둔다.  
+init-param태그안에 param name과 param value를 지정한다.  
+2. 다른방법 에노테이션으로 설정.  
+```java
+initParams = {
+  @WebInitParam(name="driver", value="com.mysql.jdbc.Driver"),
+  ...
+}
+```
+애노테이션을 쓰면 소스파일에 써야해서 사실 바람직하진 않다.  
+  
+서블릿의 초기화 매개변수값을 어떻게 꺼낼 수 있을까?  
+web.xml에 적힌 파라미터값을 ServletConfig을 이용해서 getInitParameter("파라미터명"); 을 통해 파라미터값을 가져올 수 있다.  
+```xml
+  	<!-- 서블릿 선언 -->
+	<servlet>
+		<servlet-name>MemberListServlet</servlet-name>
+		<servlet-class>spms.servlets.MemberListServlet</servlet-class>
+		<init-param>
+			<param-name>driver</param-name>
+			<param-value>com.mysql.jdbc.Driver</param-value>
+		</init-param>
+		<init-param>
+			<param-name>url</param-name>
+			<param-value>jdbc:mysql://localhost/studydb</param-value>
+		</init-param>
+		<init-param>
+			<param-name>username</param-name>
+			<param-value>study</param-value>
+		</init-param>
+		<init-param>
+			<param-name>password</param-name>
+			<param-value>study</param-value>
+		</init-param>
+	</servlet>
+	
+	<!-- 서블릿을 URL과 연결 -->
+	<servlet-mapping>
+		<servlet-name>MemberListServlet</servlet-name>
+		<url-pattern>/member/list</url-pattern>
+	</servlet-mapping> 
+```
+다음과 같이 name, value를 설정하고 MemeberListSErvlet에서는 애노테이션을 지운뒤, servlet-mapping에 url-pattern을 추가했다.  
+```java
+			//DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			ServletConfig config = this.getServletConfig();
+			Class.forName(config.getInitParameter("driver"));
+```
+driver대신 Class를 이용하여 Class를 호출하도록 하였다.  
+```java
+//2. 드라이버를 사용하여 Mysql 서버와 연결하라
+			con = DriverManager.getConnection(
+					this.getInitParameter("url"),
+					this.getInitParameter("username"),
+					this.getInitParameter("password"));
+```
+아래있는 부분도 수정.  
+![image](https://user-images.githubusercontent.com/61738600/127030481-2e57271b-4358-4f4d-bc6b-7d8180055244.png)
+  
+잘나온다.  
+
+
 
