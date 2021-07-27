@@ -4,6 +4,9 @@
 ***  
 이 장에서는 재사용 라이브러리 사용자와 object의 세부정보를 알 수 있는 고급 javaScript 기능에 대해 다룬다  
 메타프로그래밍은 다른 코드를 조작하기 위해 쓰인다.  
+***  
+본론  
+***  
 ## 🦑 Property Attributes  
 JavaScriptd property는 name과 value가 있고 또한 어떻게 작동할건지와 어떻게 쓸 수 있는지에 대한 3가지 속성이 있다.  
 1. writable : value가 바뀔 수 있는지  
