@@ -492,7 +492,7 @@ xml에도 filter을 추가한다.
 		<url-pattern>*</url-pattern>
 	</filter-mapping>
 ```
-
+🥕아니 제발 404나오면 filter 어디서 가져오는지 잘 보자.. 컴퓨터는 잘못이 없다..
 
 	
 
