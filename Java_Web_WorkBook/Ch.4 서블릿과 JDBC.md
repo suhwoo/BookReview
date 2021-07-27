@@ -372,5 +372,55 @@ driver대신 Class를 이용하여 Class를 호출하도록 하였다.
   
 잘나온다.  
 
+## 4.8 컨텍스트 초기화 매개변수  
+web.xml에 <context.param>으로 선언한다.  
+ServletContext라는 객체를 통해 꺼낼 수 있다. getInitParameter  
+  
+서블릿 초기화 매개변수 vs 컨텍스트 초기화 매개변수  
+서블릿 초기화 매개변수는 해당 서블릿만 사용이 가능하고, 컨텍스트 초기화 매개변수는 모든 서블릿이 사용가능하다.   
+```xml
+	<context-param>
+		<param-name>driver</param-name>
+		<param-value>com.mysql.jdbc.Driver</param-value>
+	</context-param>
+	<context-param>
+		<param-name>url</param-name>
+		<param-value>jdbc:mysql://localhost/studydb</param-value>
+	</context-param>
+	<context-param>
+		<param-name>username</param-name>
+		<param-value>study</param-value>
+	</context-param>
+	<context-param>
+		<param-name>password</param-name>
+		<param-value>study</param-value>
+	</context-param>
+	<!-- 서블릿 선언 -->
+	<servlet>
+```
+다음과 같이 servlet밖으로 꺼내고 init-param을 context-param으로 바꾼다.  
+```java
+			ServletContext ctx = this.getServletContext();
+			Class.forName(ctx.getInitParameter("driver"));
+```
+Servlet에서도 context를 통해 꺼낸다.  
+
+## 4.9 필터 사용하기  
+서블릿 컨테이너가 서블릿에게 service()를 요청하고 servlet이 응답을 준다. 필터는 이 서블릿 컨테이너와 서블릿 사이에 끼운다.  
+필터 실행은 서블릿 컨테이너로 부터 doFilter()을 호출한다. 그 다음 필터도 doFilter()로 호출한다.  
+마지막 필터가 서블릿에 service()를 호출한다. 서블릿에서 서블릿컨테이너로 올때도 필터들을 다시 거쳐 돌아오게 된다.  
+언제쓸까?  
+1. 서블릿이 실행될때마다 로그를 출력한다던가 
+2. 유효한 사용자가 맞는지
+3. 암호화 및 복호화 클라이언트로부터 넘어오는 정보가 암호화되어 있다면 복호화한다던지  
+4. 데이터 압축 및 해제  
+5. 이미지 변환  
+6. ...  
+
+언제든 필요할때 넣고 필요없을때 뺄수있어서 servlet변경없이 기능을 추가할 수 있다.  
+Filter라는 인터페이스를 이용해서 클래스를 만든다.  
+
+
+
 
 
