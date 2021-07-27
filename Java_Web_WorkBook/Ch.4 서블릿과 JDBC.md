@@ -431,8 +431,69 @@ web.xml안에 <filter>태그 안에 필터 이름과 필터 클래스를 지정�
 filter-mapping을 통해 언제 필터를 실행할건지 정한다.  
 애노테이션으로 필터를 지정할 수도 있긴한다.  
 ```java
-@
+@WebFilter(
+  urlPatterns="/*",
+  initParams={
+    @WebInitParam(
+	name="encoding",value="UTF=8"
+    )
+	})
 ```
+MemberAddServlet에 있는 request.setCharacterEncoding("UTF-8");는 한글이 들어갈때마다 실행되어야 했다.  
+이부분을 필터로 바꿔보자!  
+
+MemberAddServlet에 있는 request.setCharacterEncoding("UTF-8");를 지우고  
+filter이라는 class를 package안에 넣어준다.  
+```java
+package filters;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+public class ChracterEncodingFilter implements Filter{
+	//필터를 만들때는 Filter을 implement해야.
+	FilterConfig config;
+	@Override
+	public void init(FilterConfig config) throws ServletException {
+		this.config=config;
+	}
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain nextFilter)
+			throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		//서블릿 실행전 수행할 작업은 여기
+		request.setCharacterEncoding("UTF-8");
+		
+		nextFilter.doFilter(request, response);
+		
+		//서블릿을 실행한후 수행할 작업은 여기에
+		
+		
+	}
+
+ 
+}
+
+```
+xml에도 filter을 추가한다.  
+```xml
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>filters.CharacterEncodingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+```
+
+
 	
 
 
