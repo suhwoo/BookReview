@@ -35,19 +35,19 @@ Servlet에서 상속받은 JspPage인터페이스에 HttpJspPage 인터페이스
   
 ## 5.3 JSP의 주요 구성요소  
 
-  1. 템플릿 데이터  
-  Servlet class를 만드는데 탬플릿으로 쓰인다.  
-  타이밍한것들이 out.write();로 생성된다.  
-  예를 들어
-  ```jsp
-  <h2>계산기</h2>
-  ```
-  는 
-  ```java
-  out.write("<h2>계산기</h2>\n");
-  ```
-  으로 생성된다.  
-  2. JSP 지시자  
+1. 템플릿 데이터  
+Servlet class를 만드는데 탬플릿으로 쓰인다.  
+타이밍한것들이 out.write();로 생성된다.  
+예를 들어
+```jsp
+<h2>계산기</h2>
+```
+는 
+```java
+out.write("<h2>계산기</h2>\n");
+```
+으로 생성된다.  
+2. JSP 지시자  
 ```jsp
   <%@page
           language = "java"//JSP페이지에서 사용할 언어.
