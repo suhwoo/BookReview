@@ -49,11 +49,11 @@ out.write("<h2>계산기</h2>\n");
 으로 생성된다.  
 2. JSP 지시자  
 ```jsp
-  <%@page
-          language = "java"//JSP페이지에서 사용할 언어.
-          contentType="text/html;charset=UTF-8"//다음의 자바 코드를 생성. response.setContentType("text/html;charset=UTF-8");
-          import="java.util.*,java.io.*"//JSP페이지에서 사용할 자바 패키지 임포트 코드를 생성. import java.util.*;
-          %>
+<%@page
+  language = "java"//JSP페이지에서 사용할 언어.
+  contentType="text/html;charset=UTF-8"//다음의 자바 코드를 생성. response.setContentType("text/html;charset=UTF-8");
+  import="java.util.*,java.io.*"//JSP페이지에서 사용할 자바 패키지 임포트 코드를 생성. import java.util.*;
+%>
 ```
 3. 스크립트릿  
 <%...%> 다음과 같은 곳에 java코드가 들어가 있으면 서블릿 클래스에 _jspService()안에 그대로 복사된다.  
@@ -66,6 +66,15 @@ out.write("<h2>계산기</h2>\n");
 🔑무엇이 어떻게 변환되는지를 알아야함!  
   
 ## 5.4 서블릿에서 뷰 분리하기  
+  원래는 서블릿이 컴트롤러+모델+뷰  
+  이제 뷰를 분리해보자.  
+  **뷰 분리**  
+  서블릿이 DBMS로 부터 가져온 결과를 값객체(DTO)에 넘겨줘야 한다.  
+  그리고 JSP가 값객체로 부터 값을 가져와야 한다.  
+  ![image](https://user-images.githubusercontent.com/61738600/127369218-ad796e56-ae13-4c4c-a231-0ca2200230f0.png)  
+  
+
+  
 
 
   
