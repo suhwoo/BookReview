@@ -72,6 +72,7 @@ out.write("<h2>계산기</h2>\n");
   서블릿이 DBMS로 부터 가져온 결과를 값객체(DTO)에 넘겨줘야 한다.  
   그리고 JSP가 값객체로 부터 값을 가져와야 한다.  
   ![image](https://user-images.githubusercontent.com/61738600/127369218-ad796e56-ae13-4c4c-a231-0ca2200230f0.png)  
+  [코드는 여기에](https://github.com/suhwoo/show_member_list_with__view)  
   
 
   
