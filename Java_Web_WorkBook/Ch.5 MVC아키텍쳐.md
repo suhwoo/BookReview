@@ -1,4 +1,5 @@
 # 5장 MVC 아키텍쳐  
+[코드는 여기에](https://github.com/suhwoo/show_member_list_with__view)   
 ## 5.1 MVC 이해하기  
 기존의 웹프로그래밍 방식은 올인원방식, 클라이언트요청을 서블릿 혼자서 처리하는 방식이다.  
 원래 서블릿이 했던 일은 요철 파라미터를 가공하고 비지니스 로직 및 데이터를 가공하고 결과 데이터를 생성한다.  
@@ -72,7 +73,17 @@ out.write("<h2>계산기</h2>\n");
   서블릿이 DBMS로 부터 가져온 결과를 값객체(DTO)에 넘겨줘야 한다.  
   그리고 JSP가 값객체로 부터 값을 가져와야 한다.  
   ![image](https://user-images.githubusercontent.com/61738600/127369218-ad796e56-ae13-4c4c-a231-0ca2200230f0.png)  
-  [코드는 여기에](https://github.com/suhwoo/show_member_list_with__view)  
+    
+## 5.5 포워딩과 인클루딩
+  뷰와 같이 화면 생성을 위임하는 것을 including이라고 한다.
+  어느 jsp로 보낼지 지정하면 된다.
+  Dispatcher가 배달자라고 보면 된다. 
+  즉, 서블릿A가 서블릿B에게 실행을 위임시키고 서블릿B에서 위임된 일을 끝내면 다시 제어권을 A에게 넘긴다.
+  
+  반면 포워딩은 서블릿A가 B에게 위임해준뒤 서블릿B의 실행이 끝나도 서블릿A로 돌아오지 않는다.
+  예를 들어 MemberListServlet에서 에러를 처리하기 위해 Error.jsp로 위임하면 다시 servlet으로 돌아올필요가 없다. 반면 MemberList.jsp에서 header등을 출력하는것을 위임할때는 인클루딩을 써야한다.
+  
+  
   
 
   
