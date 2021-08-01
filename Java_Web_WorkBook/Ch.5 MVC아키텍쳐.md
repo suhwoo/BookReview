@@ -82,6 +82,32 @@ out.write("<h2>계산기</h2>\n");
   
   반면 포워딩은 서블릿A가 B에게 위임해준뒤 서블릿B의 실행이 끝나도 서블릿A로 돌아오지 않는다.
   예를 들어 MemberListServlet에서 에러를 처리하기 위해 Error.jsp로 위임하면 다시 servlet으로 돌아올필요가 없다. 반면 MemberList.jsp에서 header등을 출력하는것을 위임할때는 인클루딩을 써야한다.
+  ## 5.6 데이터 보관소
+  서블릿에서 제공하는 데이터보관소는 4가지이다. 
+  - ServletContext
+  - HttpSession
+  - ServletRequest
+  - JspContext
+  ServletContext는 웹 애플리케이션이 시작될때 만들어지고 웹 애플리케이션이 종료될때 소멸된다. 그러므로 웹 애플리케이션 당 1개를 갖는다.
+  HttpSession은 브라우저에서 최초로 Servlet컨테이너를 요청할때 생성되고 일정시간동안 요청이 없으면 자동으로 소멸된다. 세션ID를 통해서 사용자별로 관리된다. 100명의 사용자==100개의 세션. 한사람이 브라우저를 100개를 띄워도 하나이다.
+  ServletRequest는 클라이언트 요청이 시작되어서 클라이언트 응답이 끝날때까지 유지된다. 요청을 청하는 동안 서블릿끼리 데이터를 공유할때(인클루딩,포워딩) 적합하다.
+  JspContext는 JSP페이지를 사용할때 만들어진다. JSP를 실행하는 동안 존재한다. JSP가 만든 데이터를 태그 핸들러가 사용하고자 할때 사용한다.
+  
+  **ServletContext**
+  이전에는 Servlet에서 데이터를 사용하려고 하면 Connection객체를 생성해야 했다.
+  매번 데이터가 바뀔때마다 Connection객체를 생성하고...사용하고...Connection객체를 닫고...
+  ServletContext를 이용해서 디비 Connection객체를 공유하게 한다.
+  AppInitServlet이 Connection객체를 만들고 나머지 Servlet들이 여기서 가져다 쓴다.
+  AppInitServlet처럼 서블릿이 공통으로 사용하는 자원을 준비하는 servlet은 web.xml에 servlet태그를 작성한다. 단, 클라이언트에서 요청하진 않아야하므로 mapping은 안한다. 대신 <load-on-startup>을 이용해서 init()를 호출한다. 낮은 숫자부터 생성된다.
+  
+  기존의 서블릿도 변경해야한다. 직접 Connection하지 말고 ServletContext에서 꺼내쓴다.
+  **HttpSession**
+  서블릿 컨테이너가 세션식별자를 쿠키에 담아 클라이언트로 보낸다. 클라이언트는 식별자를 메모리에 보관한다. 다음부터는 서버에 요청할때마다 세션 식별자를 보낸다.
+  로그인을 요청하게 되면 데이터에서 해당 아이디를 찾아서 HttpSession에 보관한다.
+  저장된 객체를 Header.jsp가 가져다가 쓴다.
+  로그아웃 요청이 올때는 세션을 무효화시킨다. session.invaildate() 다음에 로그임 요구할때는 새로운 세션이 만들어질 것이다.
+  
+  
   
   
   
