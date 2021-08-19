@@ -150,6 +150,48 @@ out.write("<h2>계산기</h2>\n");
   앞에 \ 를 붙이면 일반 텍스트 취급한다.
   결과는 10 + 20 = 30
   그외에 논리연산자나 null인지 확인하는 empty, and, not등의 예약 키워드가 있다.
+  EL로도 번위를 설정할 수 있는데 그럼 JSP액션태그와 다른 점은 EL로는 객체를 생성할 수 없다는 것이다.
+  
+  ## 5.9 JSTL사용하기
+  jstl을 다운받는 부분이 나오는데,, 가이드와 다르게 다운로드 페이지가 안보여서 그냥 lession05 lib에서 jstl만 슬쩍 가져왔다ㅎㅎ
+  jstl 태그들은 p.356에 나와있다. 나중에 어떻게 쓰는지 잊어버리면 이 부분 볼것!
+  1. <c:out>
+  출력문을 만드는 태그
+  ```jsp
+    <c:out value="출력할 값" default="기본값"/>
+  ```
+  2. <c:set>
+  변수를 생성하거나 덮어쓸때 로컬변수가 아니라 보관소에 저장된다.
+  ```jsp
+    <c:set var="변수명" value="값" scope="page|request|session|application"/>
+  ```
+  3. <c:remove>
+  보관소에 저장된 값을 삭제
+  ```
+  <c:remove var="변수명" scope="page|request|session|application"/>
+  ```
+  4. <c:if>
+  test 속성이 참이면 콘텐츠실행
+  ```
+    <c:if test="조건" var="변수명" scope="page|request|session|application">콘텐츠</c:if>
+  ```
+  5. <c:choose>
+  ```
+    <c:choose>
+      <c:when test="${userid == 'hong'}"></c:when>
+      <c:when test="${userid == 'king'}"></c:when>
+      <c:otherwise>
+        등록되지 않은 사용자입니다.
+      </c:otherwise>
+    </c:choose>
+  ```
+  6. <c:forEach>
+  반복적인 작업을 정의할때 사용한다.
+  ```
+    <c:forEach var="변수명" items="목록데이터" begin="시작인덱스" end="종료인덱스">
+      콘텐츠
+    </c:forEach>
+  ```
   
   
   
