@@ -107,6 +107,24 @@ out.write("<h2>계산기</h2>\n");
   저장된 객체를 Header.jsp가 가져다가 쓴다.
   로그아웃 요청이 올때는 세션을 무효화시킨다. session.invaildate() 다음에 로그임 요구할때는 새로운 세션이 만들어질 것이다.
   
+  #5.7 JSP 액션 태그
+  JSP를 작성할때 유지보수를 위해 Java코드를 넣는것을 최소화하고 있다.
+  이를 위해 JSP에서는 JSP전용태그를 사용하고 있다.
+  1. jsp:useBean
+  application, session, request, page보관소에 저장된 자바 객체를 사용할 수 있다.
+  ```jsp
+  <jsp:useBean id="members" scope="request" class="java.util.ArrayList" type="java.ArrayList<spms.vo.Member>"/>
+  ```
+  이 액션태그는 아래 자바코드와 같다.
+  ```java
+  java.util.ArrayList<spms.vo.Member> members=(java.ArrayList<spms.vo.Member>)request.getAttribute("members");//id,type, scope가 쓰이는 부분
+  if(members == null){
+    members = new java.util.ArrayList();//class가 여기서 쓰인다.
+    request.setAttribute("members",members);
+  }
+  ```
+  
+  
   
   
   
