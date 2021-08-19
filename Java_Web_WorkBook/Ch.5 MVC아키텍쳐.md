@@ -107,10 +107,10 @@ out.write("<h2>계산기</h2>\n");
   저장된 객체를 Header.jsp가 가져다가 쓴다.
   로그아웃 요청이 올때는 세션을 무효화시킨다. session.invaildate() 다음에 로그임 요구할때는 새로운 세션이 만들어질 것이다.
   
-  #5.7 JSP 액션 태그
+  ## 5.7 JSP 액션 태그
   JSP를 작성할때 유지보수를 위해 Java코드를 넣는것을 최소화하고 있다.
   이를 위해 JSP에서는 JSP전용태그를 사용하고 있다.
-  1. jsp:useBean
+  jsp:useBean
   application, session, request, page보관소에 저장된 자바 객체를 사용할 수 있다.
   ```jsp
   <jsp:useBean id="members" scope="request" class="java.util.ArrayList" type="java.ArrayList<spms.vo.Member>"/>
@@ -123,8 +123,33 @@ out.write("<h2>계산기</h2>\n");
     request.setAttribute("members",members);
   }
   ```
-  
-  
+  ## 5.8 EL 사용하기
+  콤마(.)나 대괄호([])를 통해 맵, 리스트, 배열의 값을 쉽게 꺼내주는 기술이다.
+  ${}을통해 호출하거나 #{}를 통해 호출하는데 $는 JSP가 실행될때 즉시 반영되므로 즉시 적용이라고 불리고 #의 결루 시스템에서 필요하다고 판단될때 그 값을 사용하므로 지연적용이라고 불린다.
+  ```jsp
+  ${members.no}
+  ${members["no"]}
+  ```
+  다음과 같이 쓰인다.
+  ```jsp
+  <%-- 예시 --%>
+  <%
+  List<String> nameList = new LinkedList<String>();
+  nameList.add("홍길동");
+  nameList.add("임꺽정");
+  pageContext.setAttribute("nameList",nameList);
+  %>
+  <%-- 리스트 객체에서 인덱스 1값 꺼내기 --%>
+  ${nameList[1]}
+  <%--결과는 임꺽정--%>
+  ```
+  또한 연산자로도 쓸수있다.
+  ```jsp
+    \${10 + 20} = ${10 + 20}
+  ```
+  앞에 \ 를 붙이면 일반 텍스트 취급한다.
+  결과는 10 + 20 = 30
+  그외에 논리연산자나 null인지 확인하는 empty, and, not등의 예약 키워드가 있다.
   
   
   
