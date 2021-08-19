@@ -87,7 +87,7 @@ out.write("<h2>계산기</h2>\n");
   - ServletContext
   - HttpSession
   - ServletRequest
-  - JspContext
+  - JspContext  
   ServletContext는 웹 애플리케이션이 시작될때 만들어지고 웹 애플리케이션이 종료될때 소멸된다. 그러므로 웹 애플리케이션 당 1개를 갖는다.
   HttpSession은 브라우저에서 최초로 Servlet컨테이너를 요청할때 생성되고 일정시간동안 요청이 없으면 자동으로 소멸된다. 세션ID를 통해서 사용자별로 관리된다. 100명의 사용자==100개의 세션. 한사람이 브라우저를 100개를 띄워도 하나이다.
   ServletRequest는 클라이언트 요청이 시작되어서 클라이언트 응답이 끝날때까지 유지된다. 요청을 청하는 동안 서블릿끼리 데이터를 공유할때(인클루딩,포워딩) 적합하다.
@@ -98,7 +98,7 @@ out.write("<h2>계산기</h2>\n");
   매번 데이터가 바뀔때마다 Connection객체를 생성하고...사용하고...Connection객체를 닫고...
   ServletContext를 이용해서 디비 Connection객체를 공유하게 한다.
   AppInitServlet이 Connection객체를 만들고 나머지 Servlet들이 여기서 가져다 쓴다.
-  AppInitServlet처럼 서블릿이 공통으로 사용하는 자원을 준비하는 servlet은 web.xml에 servlet태그를 작성한다. 단, 클라이언트에서 요청하진 않아야하므로 mapping은 안한다. 대신 <load-on-startup>을 이용해서 init()를 호출한다. 낮은 숫자부터 생성된다.
+  AppInitServlet처럼 서블릿이 공통으로 사용하는 자원을 준비하는 servlet은 web.xml에 servlet태그를 작성한다. 단, 클라이언트에서 요청하진 않아야하므로 mapping은 안한다. 대신 load-on-startup 을 이용해서 init()를 호출한다. 낮은 숫자부터 생성된다.
   
   기존의 서블릿도 변경해야한다. 직접 Connection하지 말고 ServletContext에서 꺼내쓴다.
   **HttpSession**
