@@ -295,5 +295,127 @@ public class MemoryMemberRepository implements MemberRepository{
 
 ```
 null이 반환될 가능성이 있는경우 Optional로 감싼다. 클라이언트 쪽에서 처리됨.  
+  
+## ch.10 회원 리포지토리 테스트 케이스 작성  
+자바의 main 메소드를 통해 실행해보거나 또는 컨트롤러를 통해 실행해보거나 -> 준비하는 시간도 오래걸리고 반복테스트로 어렵고  
+JUnit이라는 프레임워크를 써서 테스트코드를 만든다.  
+assertEquals(member, result); 강의에서 이 부분을 assertThat으로 바꾸었는데 정작 할때 저부분이 안나와서 그냥 equals로 했다.  
+
+testcode
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MemoryMemberRepositoryTest {
+
+    MemoryMemberRepository repository = new MemoryMemberRepository();
+
+    @AfterEach
+    public void afterEach(){
+        repository.clearStore();
+    }
+
+    @Test
+    public void save(){
+        Member member = new Member();
+        member.setName("spring");
+
+        repository.save(member);
+
+        Member result = repository.findById(member.getId()).get();
+        assertEquals(member, result);
+
+    }
+
+    @Test
+    public void findByName(){
+        Member member1 = new Member();
+        member1.setName("s1");
+        repository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("s1");
+        repository.save(member2);
+
+        Member result = repository.findByName("s1").get();
+
+        assertEquals(result,member1);
+    }
+
+    @Test
+    public void findAll(){
+        Member member1 = new Member();
+        member1.setName("s1");
+        repository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("s1");
+        repository.save(member2);
+
+        List<Member> result = repository.findAll();
+
+        assertEquals(result.size(),2);
+    }
+
+}
+
+```
+전체 test를 돌리면 error가 나는데 이 이유는 각 test 메소드가 순서대로 실행되는게 아니기 때문이다.  
+findId->findName->findAll 순서가 아니라 순서가 어떻게 될지 모르기 때문에 이전에 저장됐던 데이터가 나와 false가 된것이다.  
+=>이 부분 해결하기 위해서는 test돌리고 나서 데이터를 clear해줘야 한다.  
+  
+## ch.11 회원서비스 개발  
+실제 비지니스 로직 작성  
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public class MemberService {
+
+    private  final MemberRepository memberRepository = new MemoryMemberRepository();
+
+    //회원가입
+    public Long join(Member member){
+        //같은 이름인 중복이름은 안된다.
+        validateDuplicateMember(member);
+
+        memberRepository.save(member);
+        return member.getId();
+    }
+
+    private void validateDuplicateMember(Member member) {
+        memberRepository.findByName(member.getName())
+                .ifPresent(m ->{
+                        throw new IllegalStateException("이미 존재하는 회원입니다.");
+                });
+    }
+
+    //전체회원조회
+    public List<Member> findMembers(){
+        return memberRepository.findAll();
+    }
+
+    public  Optional<Member> findOne(Long memberId){
+        return memberRepository.findById(memberId);
+    }
+}
+
+```
+좀더 비지니스적인 네이밍을 갖고 있다.  
+요구사항에서 무언가 문제가 생겼을때 어느부분에서 문제가 났는지 바로 알아볼 수 있게  
 
 
