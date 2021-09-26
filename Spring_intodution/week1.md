@@ -417,5 +417,105 @@ public class MemberService {
 ```
 좀더 비지니스적인 네이밍을 갖고 있다.  
 요구사항에서 무언가 문제가 생겼을때 어느부분에서 문제가 났는지 바로 알아볼 수 있게  
+  
+## ch.12 회원서비스 테스트코드  
+testcode 쉽게 만들기 -> ctrl+shift+t 하면 test만들기가 나온다 JUnit5선택하고 만들고 싶은 test선택.  
+```java
+   MemberService memberService = new MemberService();
+   MemoryMemberRepository memberRepository = new MemoryMemberRepository();
+
+```
+store을 clear하기 위해 MemoryMemberRepository를 가져오면 다른 인스턴스이기 때문에 메모리공간이 static이 아니면 사실상 다른 데이터베이스에 저장되는 것이다.  
+같은 인스턴스를 쓰게 바꿔주기 위해서는  
+```java
+private  final MemberRepository memberRepository;
+
+public MemberService(MemberRepository memberRepository){
+    this.memberRepository=memberRepository;
+}
+```
+MemberService를 다음과 같이 바꾸고
+```java
+MemberService memberService;
+MemoryMemberRepository memberRepository;
+
+@BeforeEach()
+public void beforeEach(){
+    memberRepository= new MemoryMemberRepository();
+    memberService = new MemberService(memberRepository);
+
+}
+```
+다음과 같이 객체를 생성해서 넣어주면 된다. 이것을 DI라고 한다.  
+아래는 전체 테스트 코드  
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemoryMemberRepository;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class MemberServiceTest {
+
+    MemberService memberService;
+    MemoryMemberRepository memberRepository;
+
+    @BeforeEach()
+    public void beforeEach(){
+        memberRepository= new MemoryMemberRepository();
+        memberService = new MemberService(memberRepository);
+
+    }
+
+    @AfterEach
+    public void afterEach(){
+        memberRepository.clearStore();
+    }
+
+    @Test
+    void join() {
+        //given
+        Member member = new Member();
+        member.setName("hello");
+        //when
+        Long saveId = memberService.join(member);
+        //then
+        Member findMember = memberService.findOne(saveId).get();
+        Assertions.assertEquals(member.getName(),findMember.getName());
+    }
+
+    @Test
+    public void 중복_회원_예외(){
+        //given
+        Member member1 = new Member();
+        member1.setName("spring");
+
+        Member member2 = new Member();
+        member2.setName("spring");
+        //when
+        memberService.join(member1);
+        IllegalStateException e = assertThrows(IllegalStateException.class,()->memberService.join(member2));
+        assertEquals(e.getMessage(),"이미 존재하는 회원입니다.");
+        /**
+        try{
+            memberService.join(member2);
+            fail();
+        }catch(IllegalStateException e){
+            assertEquals(e.getMessage(),"이미 존재하는 회원입니다.");
+        }**/
+        //then
+    }
+
+    @Test
+    void findMembers() {
+    }
+
+    @Test
+    void findOne() {
+    }
+}
+```
 
 
