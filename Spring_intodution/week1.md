@@ -233,3 +233,67 @@ HttpMessageConverter가 동작하고 데이터가 문자인지 json객체인지 
 도메인: 데이터베이스에 저장되고 관리되는 비지니스 도메인 객체   
 
 일단 db가 결정되지 않았으므로 memory에 저장할거고 나중에 변경 가능하도록 인터페이스를 만들것이다.  
+  
+## ch.9 회원도메인과 리포지토리 만들기  
+interface
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface MemberRepository {
+    Member save(Member member);
+    Optional<Member> findById(Long id);
+    Optional<Member> findByName(String name);
+    List<Member> findAll();
+}
+
+```
+Optional은 무슨 뜻이냐면 null을 반환하는 경우.  
+요즘에는 null을 반환할때 Optional로 감싸서 반환한다.  
+save로 멤버저장  
+findAll로 모든 회원 조회  
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+
+import java.util.*;
+
+public class MemoryMemberRepository implements MemberRepository{
+
+    private static Map<Long,Member> store = new HashMap<>();
+    private static long sequence = 0L;
+
+    @Override
+    public Member save(Member member) {
+        member.setId(++sequence);
+        store.put(member.getId(), member);
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        return Optional.ofNullable(store.get(id));
+    }
+
+    @Override
+    public Optional<Member> findByName(String name) {
+        return store.values().stream()
+                .filter(member->member.getName().equals(name))
+                .findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return new ArrayList<>(store.values());
+    }
+}
+
+```
+null이 반환될 가능성이 있는경우 Optional로 감싼다. 클라이언트 쪽에서 처리됨.  
+
+
