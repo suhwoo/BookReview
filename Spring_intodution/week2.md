@@ -42,3 +42,42 @@ public class MemberService {
     }
 ...
 ```
+![image](https://user-images.githubusercontent.com/61738600/135397656-17c8c3bd-cf66-4a16-b38a-379e77a2df57.png)  
+  
+## ch.14 자바코드로 직접 스프링 빈 등록하기.  
+```java
+package hello.hellospring;
+
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+import hello.hellospring.service.MemberService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SpringConfig {
+
+    @Bean
+    public MemberService memberService(){
+        return new MemberService(memberRepository());
+    }
+
+    @Bean
+    public MemberRepository memberRepository(){
+        return new MemoryMemberRepository();
+    }
+}
+
+```  
+- Controller는 어차피 spring이 관리하기 때문에 그대로 @Controller, @Autowired를 쓴다.  
+
+- 생성자에 넣는 것을 생성자 주입이라고 하고 @Autowired private MemberService memberService;처럼 필드주입할 수도 있다.  
+setMemberService처럼 setter주입도 할 수 있는데 public하게 노출되어 있어야한다.  
+결론적으론 요즘 권장하는 스타일은 생성자 주입이다.  
+- (이게 중요)실무에서는 정형화된 컨트롤러, 서비스, 레포는 컨포넌트로 상황에 따라 바껴야 하는거면 설정으로 스프링 빈에 등록한다.  
+예를들어 메모리 연결 레포를 나중에 데이터베이스에 연결한다던가 하는 식으로 바꿀 때 기존 코드 수정없이 할 수 있다.  
+- spring에서 관리하지 않는 (스프링 빈에 등록되지 않은 객체는) AutoWired 불가  
+  
+## ch.15 회원 웹 기능 홈화면 추가  
+
+
