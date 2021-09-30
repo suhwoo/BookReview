@@ -79,5 +79,45 @@ setMemberService처럼 setter주입도 할 수 있는데 public하게 노출되�
 - spring에서 관리하지 않는 (스프링 빈에 등록되지 않은 객체는) AutoWired 불가  
   
 ## ch.15 회원 웹 기능 홈화면 추가  
+회원을 등록하고 조회할 수 있는 사이트 만들기  
+html 우선순위! -> 요청이 오면 우선 스프린 컨테이너에 관련 컨트롤러가 있는지 찾고 없으면 static파일을 찾는다.  
+welcome file도 마찬가지. HomeController가 있고 getmapping("/")가 있으니 static 파일인 index.html은 무시된다.  
+```java
+package hello.hellospring.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+    @GetMapping("/")
+    public  String home(){
+        return "home";
+    }
+}
+```
+위는 HomeController  
+아래는 Home.html  
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div class="container">
+    <div>
+        <h1>Hello Spring</h1>
+        <p>회원 기능</p>
+        <p>
+            <a href="/members/new">회원가입</a>
+            <a href="/members">회원목록</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+```  
+
 
 
