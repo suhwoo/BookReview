@@ -197,6 +197,9 @@ public String create(MemberForm form){
 form을 통해 받은 이름을(home.html에 form으로 감싸져있다.) 새로운 member객체에 저장하고 그 member객체를 회원으로 저장한다.  
 return "redirect:/" 를 통해 홈화면으로 돌아간다.  
 이름을 저장하는 것은 post를 썼는데, 보통 데이터를 등록할때 post, 조회할때 get을 쓴다.  
+![image](https://user-images.githubusercontent.com/61738600/135589606-c8690153-8abe-45ce-8a40-41bbe5ee7c17.png)
+  
+
 
 
 
