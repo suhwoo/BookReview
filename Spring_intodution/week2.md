@@ -199,6 +199,48 @@ return "redirect:/" 를 통해 홈화면으로 돌아간다.
 이름을 저장하는 것은 post를 썼는데, 보통 데이터를 등록할때 post, 조회할때 get을 쓴다.  
 ![image](https://user-images.githubusercontent.com/61738600/135589606-c8690153-8abe-45ce-8a40-41bbe5ee7c17.png)
   
+## ch.17 회원 웹 기능 조회  
+MemberController에 다음과 같이 /members 경로(회원조회하는 페이지)를 mapping한다.  
+```java
+@GetMapping("/members")
+public String list(Model model){
+    List<Member> members = memberService.findMembers();
+    model.addAttribute("members",members);
+    return "members/memberList";
+}
+```
+memberList.html의 코드는 아래와 같다.  
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td th:text="${member.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+```
+memberList.html에서 ${members}에서 모든 회원을 저장한 member을 담은 model을 받는다.  
+안에 있는 모든 회원의 id와 name을 꺼낸다.  
+그러나 메모리에 저장된것이기 때문에 서버를 껐다가 키면 모든 데이터가 사라진다.  
+
 
 
 
