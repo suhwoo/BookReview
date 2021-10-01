@@ -118,6 +118,85 @@ public class HomeController {
 </body>
 </html>
 ```  
+  
+## ch.16 회원웹기능 등록  
+```java
+package hello.hellospring.controller;
+
+import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class MemberController {
+    private final MemberService memberService;
+
+    @Autowired
+    public MemberController(MemberService memberService){
+        this.memberService = memberService;
+    }
+
+    @GetMapping("/members/new")
+    public String createForm(){
+        return "members/createMemberForm";
+    }
+}
+
+```
+home.html에서 /members/new로 이동하면 controller에서 members/createMemberForm.html로 보낸다.  
+아래는 createMemberForm.html  
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container">
+    <form action="/members/new" method="post">
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="이름을 입력하세요">
+        </div>
+        <button type="submit">등록</button>
+
+    </form>
+</div>
+</body>
+</html>
+```
+
+이제 MemberForm을 통해 Member를 저장해보자.  
+Memberform 코드
+```java
+package hello.hellospring.controller;
+
+public class MemberForm {
+    private String name;
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+}
+```
+MemberController에서 다음 코드를 추가한다.  
+```java
+@PostMapping("/members/new")
+public String create(MemberForm form){
+    Member member = new Member();
+    member.setName(form.getName());
+
+    memberService.join(member);
+
+    return "redirect:/";
+}
+```   
+form을 통해 받은 이름을(home.html에 form으로 감싸져있다.) 새로운 member객체에 저장하고 그 member객체를 회원으로 저장한다.  
+return "redirect:/" 를 통해 홈화면으로 돌아간다.  
+이름을 저장하는 것은 post를 썼는데, 보통 데이터를 등록할때 post, 조회할때 get을 쓴다.  
 
 
 
