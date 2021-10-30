@@ -224,8 +224,78 @@ public class SpringConfig {
 
 ```
 다음과 같이 dataSource를 추가하고 Bean만 JdbcMemberRepository로 바꿈으로써 다른 코드를 손대지 않고 db를 바꿀 수 있다.  
+
+![image](https://user-images.githubusercontent.com/61738600/139525038-ce22ffa3-0909-45f8-8a43-ffa781b498cf.png)
+
   
 🥕 회원등록을 했을때 에러 페이지가 나오는 'Wrong user name or password'문제가 생기는데   
 스프링부트 2.4 부터는 resources->properties에 spring.datasource.username=sa 를 추가해줘야 한다.  
+
   
-## 
+## ch.20 스프링 통합 테스트  
+이젠 test도 spring과 연결해서 해야한다.이제 db도 spring이 관리하고 있기 때문에  
+
+원래는 서비스, 레포를 직접 생성했지만 이제는 spring container에게서 받아올 것이다.  
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@Transactional
+/*원래는 test후에 db에 데이터가 들어가기 때문에 같은 데이터로 넣으면 중복으로 처리된다.
+* Transactional을 넣으면 test가 끝난후에 db의 데이터를 모두 rollback해준다.*/
+class MemberServiceIntegrationTest {
+
+
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;//현재 spring에 등록되어 있는 configuration에서 올라온다.
+
+    @Test
+    void join() {
+        //given
+        Member member = new Member();
+        member.setName("hello");
+        //when
+        Long saveId = memberService.join(member);
+        //then
+        Member findMember = memberService.findOne(saveId).get();
+        Assertions.assertEquals(member.getName(),findMember.getName());
+    }
+
+    @Test
+    public void 중복_회원_예외(){
+        //given
+        Member member1 = new Member();
+        member1.setName("spring");
+
+        Member member2 = new Member();
+        member2.setName("spring");
+        //when
+        memberService.join(member1);
+        IllegalStateException e = assertThrows(IllegalStateException.class,()->memberService.join(member2));
+        assertEquals(e.getMessage(),"이미 존재하는 회원입니다.");
+        /**
+         try{
+         memberService.join(member2);
+         fail();
+         }catch(IllegalStateException e){
+         assertEquals(e.getMessage(),"이미 존재하는 회원입니다.");
+         }**/
+        //then
+    }
+
+
+}
+```  
+다만 역시 spring 안 뜨는 테스트가 더빠르다. 이러한 테스트를 단위테스트라고 부른다. (spring container을 사용한것을 통합테스트) 보통 단위테스트를 잘 만든 테스트라고 한다.  
+  
+
