@@ -373,6 +373,186 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 ```
 Jdbc template에 대한 자세한 설명은 template document나 후에 db연결때 이어서..  
   
+## ch.22 JPA  
+JdbcTemplate으로 바꿨을때 반복되는 코드가 줄었는데 JPA를 사용하면 반복적인 쿼리도 줄일 수 있다.  
+DB에서 데이터 가져오고 쿼리를 날리는 것은 JPA가 처리해준다.  
+JPA 를 사용하면 데이터 중심 설계에서 객체 중심의 설계를 할 수 있다.  
+```java
+implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+```  
+gradle에 data-jpa 추가한다. jpa도 포함하고 jdbc도 포함된다.  
+라이브러리에 jpa와 hibernate가 들어와야 하는데 jpa가 인터페이스고 구현체가 hibernate이다.  
+```java
+package hello.hellospring.domain;
+
+import javax.persistence.*;
+
+@Entity
+public class Member {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) //db가 알아서 id생성
+    private Long id;
+    private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+```
+jpa는 orm이라는 기술인데 o는 객체 r은 관계형, m mapping.  
+아래는 레포  
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
+
+public class JpaMemberRepository implements MemberRepository{
+
+    private final EntityManager em;
+    //jpa는 entitymanager로 동작한다. speing boot가 em을 만들어 주는데 우리는 이걸 injection받으면 된다.
+
+    public JpaMemberRepository(EntityManager em){
+        this.em = em;
+    }
+
+    @Override
+    public Member save(Member member) {
+        em.persist(member);
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        Member member=em.find(Member.class,id);
+        return Optional.ofNullable(member);
+    }
+
+    @Override
+    public Optional<Member> findByName(String name) {
+        List<Member> result = em.createQuery("select m from Member m where m.name=:name",Member.class)
+                .setParameter("name",name)
+                .getResultList();
+        return result.stream().findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        //객체(Member entity)를 대상으로 쿼리를 날린다.
+        return em.createQuery("select m from Member m",Member.class).getResultList();
+        //member entity 자체에서 찾는다.
+    }
+}
+
+```
+jpa는 실행될때 항상 Transaction내에서 실행되야 한다.  
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Transactional//이부분 추가
+public class MemberService {
+
+    private  final MemberRepository memberRepository;
+
+    public MemberService(MemberRepository memberRepository){
+        this.memberRepository=memberRepository;
+    }
+
+    //회원가입
+    public Long join(Member member){
+        //같은 이름인 중복이름은 안된다.
+        validateDuplicateMember(member);
+
+        memberRepository.save(member);
+        return member.getId();
+    }
+
+    private void validateDuplicateMember(Member member) {
+        memberRepository.findByName(member.getName())
+                .ifPresent(m ->{
+                        throw new IllegalStateException("이미 존재하는 회원입니다.");
+                });
+    }
+
+    //전체회원조회
+    public List<Member> findMembers(){
+        return memberRepository.findAll();
+    }
+
+    public  Optional<Member> findOne(Long memberId){
+        return memberRepository.findById(memberId);
+    }
+}
+
+```  
+SpringConfig에도 datasource말고 em이 필요하다.  
+```
+package hello.hellospring;
+
+import hello.hellospring.repository.*;
+import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.persistence.EntityManager;
+import javax.sql.DataSource;
+
+@Configuration
+public class SpringConfig {
+
+    private EntityManager em;
+
+    @Autowired
+    public  SpringConfig(EntityManager em){
+        this.em = em;
+    }
+    //private DataSource dataSource;
+    //@Autowired
+    //public SpringConfig(DataSource dataSource){
+    //    this.dataSource = dataSource;
+    //}
+
+    @Bean
+    public MemberService memberService(){
+        return new MemberService(memberRepository());
+    }
+
+    @Bean
+    public MemberRepository memberRepository(){
+       // return new JdbcMemberRepository(dataSource);
+        // return new JdbcTemplateMemberRepository(dataSource);
+        return new JpaMemberRepository(em);
+    }
+}
+
+```
 
 
 
