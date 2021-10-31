@@ -553,6 +553,57 @@ public class SpringConfig {
 }
 
 ```
+  
+## ch.23 스프링 데이터 JPA  
+스프링 데이터 JPA를 사용하면 인터페이스만으로 개발을 완료할 수 있다.   
+심지어 CRUD까지도 JPA가 제공한다.  
+
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface SpringDataJpaMemberRepository extends JpaRepository<Member,Long>,MemberRepository {
+    //JpaRepository를 받고있으면 이 Jpa가 구현체를 만들어서 등록해준다.
+    @Override
+    Optional<Member> findByName(String name);
+}
+
+```  
+이 인터페이스 하나면 끝.  
+Spring config는 다음과 같이 바꿔준다.  
+```java
+package hello.hellospring;
+
+import hello.hellospring.repository.*;
+import hello.hellospring.service.MemberService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SpringConfig {
+
+    private final MemberRepository memberRepository;
+
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+
+    @Bean
+    public MemberService memberService(){
+        return new MemberService(memberRepository);
+    }
+
+}
+
+```
+JpaRepository가 대부분의 기능을 모두 제공해준다. findById(),findAll() 등등...  
+그러나 name으로 찾고싶다던지 같은 공통클래스일 수 없는 것은 없다.(프로젝트마다 다른 메소드같은거.) -> 이런건 findByName(String name), findByEmail(String email) 같은 걸로 해결가능하다.  
+그 외 해결하기 어려운 부분은 순수 자바 나 JPA 같은걸 섞어서 쓸 수도 있다.  
 
 
 
