@@ -23,7 +23,15 @@
   
 (출처 : https://jeong-pro.tistory.com/168)  
   
-## 2. Maven과 Gradle의 차이  
+## 2. Maven과 Gradle의 차이   
+2.1. Gradle의 경우 Groovy 언어를 사용한 Domain-specific-language를 사용한다.  
+Maven의 경우, xml파일을 설정 파일로 사용하는데 동적인 요소를 xml로 정의하기엔 어려운 부분이 많기 때문에 설정내용이 길어지는 반면, Gradle의 경우, Groovy 스크립트로 플러그인을 호출하기 때문에 가독성이 높고 코드가 간결하다.  
+2.2. Gradle의 빌드시간이 Maven보다 짧다.  
+Gradle의 경우, 프로젝트의 어느부분이 업데이트 되었는지 알 수 있고 업데이트가 이미 반영된 빌드부분은 더이상 실행하지 않는다.  
+이와 같은 차이가 생기는 이유는 Maven은 선형적인 단계의 모델을 기반으로 하는 반면 Gradle은 작업 의존성 그래프를 기반으로 하기 때문이다. task의 업데이트를 체크하고 점진적인 build를 허용하기 때문에 빌드 시간이 단축된다.  
+2.3. Maven의 경우 멀티 프로젝트에서 특정 설정을 다른 모듈에서 사용하려면 상속받아야 하지만 Gradle은 설정 주입 방식을 제공한다.  
+2.4. Gradle은 concurrent에 안전한 캐시를 허용한다.  
+2개 이상의 프로젝트에서 동일한 캐시를 사용할 경우, 서로 overwrite되지 않도록 checksum 기반의 캐시를 사용하고 캐시를 repository와 동기화시킬 수 있다.  
 ## 3. pom.xml이란  
 pom.xml은 build파일로  
 Maven은 pom.xml을 통해 build 정보를 기술한다.  
