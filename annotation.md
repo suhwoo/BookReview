@@ -117,6 +117,58 @@ public @interface AnnotationName{
 - Annotation자체는 아무런 동작을 가지지않는 단순한 표식이지만 Reflection을 이용하면 Annotatioon의 적용여부와 엘리먼트값을 읽고 처리할 수 있다.
 - class에 적용된 annotation정보를 읽으려면 java.lang.class를 이용하고 필드, 생성자, 메소드에 적용된 annotation정보를 읽으려면class의 메소드를 통해 java.lang.reflect 패키지의 배열을 알아야한다.
 - Reflection을 이용하면 annotation 지정만으로도 원하는 클래스를 주입할 수 있다.
+    
+## 5. 어노테이션 정보 사용하기  
+어노테이션 적용한 부분을 찾아서 기술된 정보가 무엇이 있는지 알아내고 이용해야 한다.  
+  
+### 5.1 클래스에 적용된 어노테이션 정보얻기  
+```
 
+@Annotation
+
+class className{}
+
+```
+
+className.class를 이용해서 어노테이션 정보를 얻는다.  
+  
+### 5.2 필드, 생성자, 메소드에 적용된 어노테이션 정보 얻기  
+다음 메소드의 모든 리턴은 배열로 받게 된다.  
+  
+Field[]	getFields()	필드 정보를 Field 배열로 리턴  
+Constructor[]	getConstructors()	생성자 정보를 Constructor 배열로 리턴  
+Method[]	getDeclaredMethods()	메소드 정보를 Method 배열로 리턴  
+예를 들어 클래스가 다음과 같이 선언되어 있다고 하자  
+
+```
+
+class className{
+
+    @Annotation
+
+    int field1;
+
+    @Annotation
+
+    String field2;
+
+}
+
+```
+
+다음과 같이 두개의 필드가 있을때 리턴되는 값은 field1과 field2로 이루어진 배열이다.  
+필드 하나하나를 꺼내서 annotation이 있는지, 있다면 어떤 annotation이 있는지 알 수 있다.  
+필드타입에 어노테이션 정보를 얻을 수 있는 메소드가 있다.  
+  
+### 6.3 어노테이션 정보를 얻기위한 메소드  
+리턴타입/	메소드명(매개변수)  
+Boolean/	isAnnotationPresent(Class<? extends Annotation> annotationClass)  
+매개변수에 지정한 어노테이션이 적용되었는지 여부, 어노테이션이 있는가? 매개변수는 어노테이션의 타입. Class에서 호출했을 경우, 상위 클래스에 적용되는 경우에도 true를 리턴한다.  
+Annotation/	getAnnotation(Class<T> AnnotationClass)  
+매개변수에 지정한 어노테이션이 적용되어있으면 어노테이션을 리턴하고 그렇지않으면 null을 리턴한다. Class에서 호출했을 경우, 상위 클래스에 적용된 경우에도 어노테이션을 리턴한다.  
+Annotation[]/	getAnnotation()  
+적용된 모든 어노테이션을 리턴한다. 필드, 생성자의 경우, 여러개의 어노테이션이 적용될 수 있다. 어노테이션의 갯수만큼 배열을 리턴한다. Class에서 호출되었을 경우, 상위클래스에서 적용된 어노테이션도 모두 포함한다. 적용된 어노테이션이 없을 경우 길이가 0인 배열을 리턴한다.(null이 리턴되진 않는다.)  
+Annotation[]/	getDeclaredAnnotations()  
+직접 적용된 모든 어노테이션을 리턴한다. Class에서 호출되었을 경우, 상위클래스에서 적용된 어노테이션은 포함되지 않는다.  
 
 
